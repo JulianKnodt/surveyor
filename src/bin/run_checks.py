@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import json
 
 urls = ["https://github.com/JulianKnodt/regular_spatial_hash"]
 tests = [
@@ -22,12 +23,20 @@ def run_checks(url):
         test_file = os.path.join("examples", t)
         if not os.path.exists(test_file): continue
 
-        out = subprocess.check_output(["cargo", "run", "--example", os.path.splitext(t)[0], "--release"])
-        print(out)
-      except Exception:
+        child = subprocess.Popen(["cargo", "run", "--example", os.path.splitext(t)[0]])#, "--release"])
+        child.communicate()
+        if child.returncode == 0:
+          results[t] = True
+      except Exception as e:
+        print("Failed", e)
         continue
     os.chdir("..")
 
-  shutil.rmtree(folder)
+  #shutil.rmtree(folder)
 
-for url in urls: run_checks(url)
+  return results
+
+all_checks = { url: run_checks(url) for url in urls }
+
+with open("results.json", "w") as f:
+  json.dump(all_checks, f)

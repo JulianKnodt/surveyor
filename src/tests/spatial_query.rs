@@ -11,6 +11,11 @@ pub trait Spatial2DQuery<T> {
 
     /// Insert a value into this data-structure
     fn insert(&mut self, point: [f32; 2], val: T);
+
+    /// Computes the distance between two points
+    fn dist(a: [f32; 2], b: [f32; 2]) -> f32 {
+        dist(a, b)
+    }
 }
 
 impl TestMetadata for Spatial2DQueryTest {

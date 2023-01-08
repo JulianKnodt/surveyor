@@ -101,7 +101,10 @@ macro_rules! generate_test {
             let dur = std::time::Duration::from_secs(10);
             let exit_code = match run_test::<$imp, $test>(dur) {
                 TestResult::Pass => 0,
-                TestResult::Fail => 1,
+                TestResult::Fail => {
+                    println!("Failed");
+                    1
+                }
                 TestResult::Timeout => 2,
             };
             std::process::exit(exit_code);

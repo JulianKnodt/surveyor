@@ -9,3 +9,4 @@ edition = "2021"
 clap = { version = "4.0.32", features = ["derive"] }
 quickcheck = "1"
 semver = "1.0.16"
+#rustfmt-nightly = "1.4.21"

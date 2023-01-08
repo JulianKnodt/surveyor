@@ -32,7 +32,7 @@ fn main() {
 - Tags: {}
 
 Code:
-```
+```rust
 {}
 ```
 ",

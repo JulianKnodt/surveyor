@@ -12,7 +12,7 @@ which would be publicly displayed.
 - Tags: <button>Demo</button><button>Math</button>
 
 Code:
-```
+```rust
 impl < T : Calculator > Test < T > for CalculatorTest
 {
     type Input = i32 ; fn eval(input : i32) -> bool
@@ -31,14 +31,14 @@ impl < T : Calculator > Test < T > for CalculatorTest
 - Tags: <button>Demo</button><button>2D Spatial Query</button>
 
 Code:
-```
+```rust
 impl < T : Spatial2DQuery < () >> Test < T > for Spatial2DQueryTest
 {
     type Input = (f32, (f32, f32)) ; fn eval((radius, point) : Self :: Input)
     -> bool
     {
-        let point = [point.0, point.1] ; let sp = T :: new(radius) ; const N :
-        usize = 128 ; let mut gt_hits = vec! [] ; for i in 0 .. N
+        let point = [point.0, point.1] ; let mut sp = T :: new(radius) ; const
+        N : usize = 128 ; let mut gt_hits = vec! [] ; for i in 0 .. N
         {
             let x = i as f32 / N as f32 ; for j in 0 .. N
             {
