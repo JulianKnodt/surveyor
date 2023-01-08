@@ -31,6 +31,7 @@ fn dist([a, b]: [f32; 2], [i, j]: [f32; 2]) -> f32 {
 }
 
 super::document!(
+    0:1:0,
     Spatial2DQueryTest,
     impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
         type Input = (f32, (f32, f32));

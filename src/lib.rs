@@ -59,6 +59,7 @@ pub trait TestMetadata: DocumentedTest {
 /// A test that is documented
 pub trait DocumentedTest {
     fn code_block(&self) -> &'static str;
+    fn semver(&self) -> semver::Version;
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

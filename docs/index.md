@@ -8,6 +8,7 @@ which would be publicly displayed.
 ### Calculator Test
 
 - Description: Tests that a given type can operate as a basic integer calculator.
+- Version: 0.1.0
 - Tags: <button>Demo</button><button>Math</button>
 
 Code:
@@ -26,6 +27,7 @@ impl < T : Calculator > Test < T > for CalculatorTest
 ### 2D Spatial Query Test
 
 - Description: Tests if a data-structure correctly implements queries in a ball around a point in 2D.
+- Version: 0.1.0
 - Tags: <button>Demo</button><button>2D Spatial Query</button>
 
 Code:

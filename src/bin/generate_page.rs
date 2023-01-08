@@ -6,7 +6,7 @@ use surveyor::all_metadata;
 /// Outputs a markdown document which contains information for all tests
 #[derive(Debug, Parser)]
 struct Args {
-    #[arg(long,short)]
+    #[arg(long, short)]
     output: Option<String>,
 }
 
@@ -28,6 +28,7 @@ fn main() {
 ### {}
 
 - Description: {}
+- Version: {}
 - Tags: {}
 
 Code:
@@ -37,6 +38,7 @@ Code:
 ",
             metadata.title,
             metadata.description,
+            p.semver(),
             metadata.tags,
             p.code_block()
         )
