@@ -1,6 +1,7 @@
 use clap::Parser;
-use std::fs::File;
+use std::fs::{read_to_string, File};
 use std::io::{stdout, BufWriter, Write};
+use std::process::Command;
 use surveyor::all_metadata;
 
 /// Outputs a markdown document which contains information for all tests
@@ -9,6 +10,8 @@ struct Args {
     #[arg(long, short)]
     output: Option<String>,
 }
+
+const TEMP_FILENAME: &'static str = "temp.rs";
 
 fn main() {
     let args = Args::parse();
@@ -22,6 +25,14 @@ fn main() {
 
     for p in all_metadata() {
         let metadata = p.metadata();
+
+        // easiest to save code block to a file
+        // then format it, wish I could this more easily programmatically.
+        let mut temp = File::create(TEMP_FILENAME).unwrap();
+        write!(temp, "{}", p.code_block()).unwrap();
+        Command::new("rustfmt").arg(TEMP_FILENAME).output().unwrap();
+        let code_block = read_to_string(TEMP_FILENAME).unwrap();
+
         write!(
             out,
             "
@@ -40,7 +51,7 @@ Code:
             metadata.description,
             p.semver(),
             metadata.tags,
-            p.code_block()
+            code_block
         )
         .unwrap();
     }
