@@ -59,6 +59,8 @@ pub trait TestMetadata: DocumentedTest {
 /// A test that is documented
 pub trait DocumentedTest {
     fn code_block(&self) -> &'static str;
+    fn example_file(&self) -> &'static str;
+
     fn semver(&self) -> semver::Version;
 }
 
@@ -69,7 +71,7 @@ pub enum TestResult {
     Timeout,
 }
 
-pub fn run_test<S: Default, T: Test<S>>(timeout: Duration) -> TestResult {
+pub fn run_test<S, T: Test<S>>(timeout: Duration) -> TestResult {
     const NUM_RUNS: usize = 10;
     let (send, rcv) = mpsc::channel();
 
@@ -93,7 +95,7 @@ pub fn run_test<S: Default, T: Test<S>>(timeout: Duration) -> TestResult {
 
 #[macro_export]
 macro_rules! generate_test {
-    ($test: tt, $imp: tt) => {
+    ($test: ty, $imp: ty) => {
         fn main() {
             use surveyor::{run_test, TestResult};
             let dur = std::time::Duration::from_secs(10);

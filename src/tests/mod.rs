@@ -1,5 +1,8 @@
 macro_rules! document {
-  ($semver_major:literal:$semver_minor:literal:$semver_patch:literal, $t: ty, $( $code_block: tt )*)=> {
+  (
+    $semver_major:literal:$semver_minor:literal:$semver_patch:literal,
+    $file:literal, $t: ty, $( $code_block: tt )*
+  )=> {
     use crate::DocumentedTest;
     impl DocumentedTest for $t {
         fn semver(&self) -> semver::Version {
@@ -11,9 +14,8 @@ macro_rules! document {
             build: semver::BuildMetadata::EMPTY,
           }
         }
-        fn code_block(&self) -> &'static str {
-          stringify!($($code_block)*)
-        }
+        fn example_file(&self) -> &'static str { $file }
+        fn code_block(&self) -> &'static str { stringify!($($code_block)*) }
     }
 
     $( $code_block )*

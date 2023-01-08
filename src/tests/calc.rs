@@ -21,6 +21,7 @@ impl TestMetadata for CalculatorTest {
 
 super::document!(
     0:1:0,
+    "calc_test.rs",
     CalculatorTest,
     impl<T: Calculator> Test<T> for CalculatorTest {
         type Input = i32;

@@ -7,10 +7,10 @@ pub trait Spatial2DQuery<T> {
     fn new(r: f32) -> Self;
 
     /// Query a fixed radius near a point.
-    fn query(&self, point: [f32; 2]) -> impl Iterator<Item = [f32; 2]>;
+    fn query(&self, point: [f32; 2]) -> impl Iterator<Item = [f32; 2]> + '_;
 
     /// Insert a value into this data-structure
-    fn insert(&self, point: [f32; 2], val: T);
+    fn insert(&mut self, point: [f32; 2], val: T);
 }
 
 impl TestMetadata for Spatial2DQueryTest {
@@ -32,13 +32,14 @@ fn dist([a, b]: [f32; 2], [i, j]: [f32; 2]) -> f32 {
 
 super::document!(
     0:1:0,
+    "2D_spatial_query_test.rs",
     Spatial2DQueryTest,
     impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
         type Input = (f32, (f32, f32));
 
         fn eval((radius, point): Self::Input) -> bool {
             let point = [point.0, point.1];
-            let sp = T::new(radius);
+            let mut sp = T::new(radius);
             const N: usize = 128;
             let mut gt_hits = vec![];
 
