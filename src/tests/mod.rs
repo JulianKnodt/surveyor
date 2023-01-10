@@ -24,8 +24,24 @@ macro_rules! document {
 
 pub(crate) use document;
 
+macro_rules! subtests {
+  ($( $name: literal, $t: ty = $test_expr: expr $(,)?)*) => {
+    fn subtests() -> &'static [(&'static str, &'static dyn quickcheck::Testable)] {
+      &[$(
+        ($name, &($test_expr as $t)),
+      )*
+      ]
+    }
+  }
+}
+
+pub(crate) use subtests;
+
 pub mod calc;
 pub use calc::*;
 
 pub mod spatial_query;
 pub use spatial_query::*;
+
+pub mod linalg;
+pub use linalg::*;

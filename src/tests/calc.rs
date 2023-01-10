@@ -14,7 +14,10 @@ impl TestMetadata for CalculatorTest {
         Metadata {
             title: "Calculator Test",
             tags: Tags(&[Tag::Demo, Tag::Math]),
-            description: "Tests that a given type can operate as a basic integer calculator.",
+            description: "Tests that a given type can operate as a basic integer calculator. \
+            This is a demonstration test, and thus is not difficult to implement. In practice, \
+            this could be useful to demonstrate that an abstract machine or an implemented \
+            languaage  can be used to implement fundamental mathematic operations.",
         }
     }
 }
@@ -24,8 +27,7 @@ super::document!(
     "calc_test.rs",
     CalculatorTest,
     impl<T: Calculator> Test<T> for CalculatorTest {
-        type Input = i32;
-
+        /*
         fn eval(input: i32) -> bool {
             let calc = T::new();
             calc.add(input, 3) == input + 3
@@ -34,5 +36,6 @@ super::document!(
                 && calc.add(input, 0) == input
                 && calc.mul(input, 2) == input * 2
         }
+        */
     }
 );

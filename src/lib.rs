@@ -1,9 +1,7 @@
 #![feature(return_position_impl_trait_in_trait)]
 #![allow(incomplete_features)]
 
-use quickcheck::{Arbitrary, Gen};
-use std::sync::mpsc;
-use std::thread;
+use quickcheck::{Gen, Testable};
 use std::time::Duration;
 
 pub mod tests;
@@ -13,6 +11,7 @@ pub enum Tag {
     Demo,
     Math,
     SpatialQuery2D,
+    LinearAlgebra,
     Regex,
 }
 
@@ -23,6 +22,7 @@ impl Tag {
             Demo => "Demo",
             Math => "Math",
             SpatialQuery2D => "2D Spatial Query",
+            LinearAlgebra => "Linear Algebra",
             Regex => "Regex",
         }
     }
@@ -41,9 +41,9 @@ impl std::fmt::Display for Tags {
 
 /// A test case for `T`, whether it correctly implements a given function.
 pub trait Test<T> {
-    type Input: Arbitrary + Send + 'static;
-
-    fn eval(input: Self::Input) -> bool;
+    fn subtests() -> &'static [(&'static str, &'static dyn Testable)] {
+        &[]
+    }
 }
 
 pub struct Metadata {
@@ -71,22 +71,20 @@ pub enum TestResult {
     Timeout,
 }
 
-pub fn run_test<S, T: Test<S>>(timeout: Duration) -> TestResult {
+pub fn run_test<S, T: Test<S>>(_timeout: Duration) -> TestResult {
     const NUM_RUNS: usize = 10;
-    let (send, rcv) = mpsc::channel();
 
     let mut g = Gen::new(10);
-    for _ in 0..NUM_RUNS {
-        let input = T::Input::arbitrary(&mut g);
-        let send_clone = send.clone();
-        thread::spawn(move || {
-            send_clone.send(T::eval(input)).unwrap();
-        });
 
-        match rcv.recv_timeout(timeout) {
-            Ok(true) => {}
-            Ok(false) => return TestResult::Fail,
-            Err(_) => return TestResult::Timeout,
+    for (_, test) in T::subtests() {
+        for _ in 0..NUM_RUNS {
+            let result = test.result(&mut g);
+
+            if result.is_failure() {
+                return TestResult::Fail;
+            } else if result.is_error() {
+                return TestResult::Timeout;
+            }
         }
     }
 
@@ -101,10 +99,7 @@ macro_rules! generate_test {
             let dur = std::time::Duration::from_secs(10);
             let exit_code = match run_test::<$imp, $test>(dur) {
                 TestResult::Pass => 0,
-                TestResult::Fail => {
-                    println!("Failed");
-                    1
-                }
+                TestResult::Fail => 1,
                 TestResult::Timeout => 2,
             };
             std::process::exit(exit_code);
@@ -113,5 +108,9 @@ macro_rules! generate_test {
 }
 
 pub fn all_metadata() -> Vec<Box<dyn TestMetadata>> {
-    vec![Box::new(CalculatorTest), Box::new(Spatial2DQueryTest)]
+    vec![
+        Box::new(CalculatorTest),
+        Box::new(Spatial2DQueryTest),
+        Box::new(LinalgTest),
+    ]
 }

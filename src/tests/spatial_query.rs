@@ -21,10 +21,13 @@ pub trait Spatial2DQuery<T> {
 impl TestMetadata for Spatial2DQueryTest {
     fn metadata(&self) -> Metadata {
         Metadata {
-        title: "2D Spatial Query Test",
-        tags: Tags(&[Tag::Demo, Tag::SpatialQuery2D]),
-        description: "Tests if a data-structure correctly implements queries in a ball around a point in 2D."
-      }
+            title: "2D Spatial Query Test",
+            tags: Tags(&[Tag::Demo, Tag::SpatialQuery2D]),
+            description: "Tests if a data-structure correctly implements queries in a ball around a
+        point in 2D. A common problem is collision detection between bounded objects which can
+        be checked quickly by adding a bounding sphere around each object. This test assesses
+        whether or not a library can check for points within a given radius",
+        }
     }
 }
 
@@ -40,9 +43,9 @@ super::document!(
     "2D_spatial_query_test.rs",
     Spatial2DQueryTest,
     impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
-        type Input = (f32, (f32, f32));
-
-        fn eval((radius, point): Self::Input) -> bool {
+        super::subtests!{
+          "fixed-radius query",
+          fn(f32, (f32, f32)) -> bool = |radius, point| {
             let point = [point.0, point.1];
             let mut sp = T::new(radius);
             const N: usize = 128;
@@ -70,6 +73,7 @@ super::document!(
                 }
             }
             true
+          }
         }
     }
 );
