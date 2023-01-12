@@ -71,24 +71,24 @@ pub enum TestResult {
     Timeout,
 }
 
-pub fn run_test<S, T: Test<S>>(_timeout: Duration) -> TestResult {
+pub fn run_test<S, T: Test<S>>(
+    _timeout: Duration,
+) -> impl Iterator<Item = (&'static str, TestResult)> {
     const NUM_RUNS: usize = 10;
-
     let mut g = Gen::new(10);
 
-    for (_, test) in T::subtests() {
+    T::subtests().iter().map(move |&(name, test)| {
         for _ in 0..NUM_RUNS {
             let result = test.result(&mut g);
 
             if result.is_failure() {
-                return TestResult::Fail;
+                return (name, TestResult::Fail);
             } else if result.is_error() {
-                return TestResult::Timeout;
+                return (name, TestResult::Timeout);
             }
         }
-    }
-
-    TestResult::Pass
+        (name, TestResult::Pass)
+    })
 }
 
 #[macro_export]
@@ -97,12 +97,15 @@ macro_rules! generate_test {
         fn main() {
             use surveyor::{run_test, TestResult};
             let dur = std::time::Duration::from_secs(10);
-            let exit_code = match run_test::<$imp, $test>(dur) {
-                TestResult::Pass => 0,
-                TestResult::Fail => 1,
-                TestResult::Timeout => 2,
-            };
-            std::process::exit(exit_code);
+
+            for (name, result) in run_test::<$imp, $test>(dur) {
+                let result = match result {
+                    TestResult::Pass => "pass",
+                    TestResult::Fail => "fail",
+                    TestResult::Timeout => "timeout",
+                };
+                println!("{name}, {result}");
+            }
         }
     };
 }

@@ -35,8 +35,7 @@ fn main() {
 
         write!(
             out,
-            "
-### {}
+            "### {}
 
 - Description: {}
 - Version: {}
@@ -51,7 +50,7 @@ Code:
             metadata.description,
             p.semver(),
             metadata.tags,
-            code_block
+            code_block,
         )
         .unwrap();
     }
