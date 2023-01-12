@@ -23,27 +23,36 @@ impl<T: Calculator> Test<T> for CalculatorTest {}
 Code:
 ```rust
 impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
-    super::subtests! {
-        "fixed-radius query", fn(f32, (f32, f32)) -> bool = | radius, point |
-        {
-            let point = [point.0, point.1] ; let mut sp = T :: new(radius) ;
-            const N : usize = 128 ; let mut gt_hits = vec! [] ; for i in 0 ..
-            N
-            {
-                let x = i as f32 / N as f32 ; for j in 0 .. N
-                {
-                    let y = j as f32 / N as f32 ; let p = [x, y] ;
-                    sp.insert(p, ()) ; if dist(p, point) < radius
-                    { gt_hits.push(p) ; }
+    super::subtests!("fixed-radius query", fn(f32, (f32, f32)) -> bool, |radius,
+                                                                         (
+        px,
+        py,
+    )| {
+        let point = [px, py];
+        let mut sp = T::new(radius);
+        const N: usize = 128;
+        let mut gt_hits = vec![];
+        for i in 0..N {
+            let x = i as f32 / N as f32;
+            for j in 0..N {
+                let y = j as f32 / N as f32;
+                let p = [x, y];
+                sp.insert(p, ());
+                if dist(p, point) < radius {
+                    gt_hits.push(p);
                 }
-            } for near_p in sp.query(point)
-            {
-                let idx = gt_hits.iter().position(| & p | p == near_p) ; if
-                let Some(idx) = idx { gt_hits.remove(idx) ; } else
-                { return false ; }
-            } true
+            }
         }
-    }
+        for near_p in sp.query(point) {
+            let idx = gt_hits.iter().position(|&p| p == near_p);
+            if let Some(idx) = idx {
+                gt_hits.remove(idx);
+            } else {
+                return false;
+            }
+        }
+        true
+    },);
 }
 
 ```
@@ -59,14 +68,13 @@ impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
 Code:
 ```rust
 impl<T: Linalg> Test<T> for LinalgTest {
-    super::subtests! {
-        "elem-wise addition", fn((f32, f32, f32), (f32, f32, f32)) -> bool = |
-        (x, y, z), (i, j, k) |
-        {
-            T :: new(& [x, y, z]) + T :: new(& [i, j, k]) == T ::
-            new(& [x + i, y + j, z + k])
+    super::subtests!(
+        "elem-wise addition",
+        fn((f32, f32, f32), (f32, f32, f32)) -> bool,
+        |(x, y, z), (i, j, k)| {
+            T::new(&[x, y, z]) + T::new(&[i, j, k]) == T::new(&[x + i, y + j, z + k])
         },
-    }
+    );
 }
 
 ```

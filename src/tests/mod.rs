@@ -25,12 +25,11 @@ macro_rules! document {
 pub(crate) use document;
 
 macro_rules! subtests {
-  ($( $name: literal, $t: ty = $test_expr: expr $(,)?)*) => {
+  ($( $name: literal, $t: ty, $test_fn: expr,)*) => {
     fn subtests() -> &'static [(&'static str, &'static dyn quickcheck::Testable)] {
       &[$(
-        ($name, &($test_expr as $t)),
-      )*
-      ]
+        ($name, &($test_fn as $t)),
+      )*]
     }
   }
 }

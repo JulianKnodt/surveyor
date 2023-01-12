@@ -43,10 +43,10 @@ super::document!(
     "2D_spatial_query_test.rs",
     Spatial2DQueryTest,
     impl<T: Spatial2DQuery<()>> Test<T> for Spatial2DQueryTest {
-        super::subtests!{
+        super::subtests!(
           "fixed-radius query",
-          fn(f32, (f32, f32)) -> bool = |radius, point| {
-            let point = [point.0, point.1];
+          fn(f32, (f32, f32)) -> bool, |radius, (px, py)| {
+            let point = [px, py];
             let mut sp = T::new(radius);
             const N: usize = 128;
             let mut gt_hits = vec![];
@@ -73,7 +73,7 @@ super::document!(
                 }
             }
             true
-          }
-        }
+          },
+        );
     }
 );

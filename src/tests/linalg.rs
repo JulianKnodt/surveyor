@@ -47,8 +47,8 @@ super::document!(
     LinalgTest,
 
     impl<T: Linalg> Test<T> for LinalgTest {
-        super::subtests! {
-            "elem-wise addition", fn((f32, f32, f32), (f32, f32, f32)) -> bool =
+        super::subtests!(
+            "elem-wise addition", fn((f32, f32, f32), (f32, f32, f32)) -> bool,
             |(x,y,z), (i,j,k)| {
                 T::new(&[x,y,z]) + T::new(&[i,j,k]) == T::new(&[x + i, y + j, z + k])
             },
@@ -74,6 +74,6 @@ super::document!(
 
             "positive norm", fn (Vec<f32>) -> bool = |v| T::new(&v).magnitude() >= 0.0,
             */
-        }
+         );
     }
 );
