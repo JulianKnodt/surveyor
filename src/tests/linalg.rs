@@ -52,28 +52,26 @@ super::document!(
             |(x,y,z), (i,j,k)| {
                 T::new(&[x,y,z]) + T::new(&[i,j,k]) == T::new(&[x + i, y + j, z + k])
             },
-            /*
 
-            "elem-wise subtraction", fn((f32, f32, f32), (f32, f32, f32)) -> bool =
+            "elem-wise subtraction", fn((f32, f32, f32), (f32, f32, f32)) -> bool,
             |(x,y,z), (i,j,k)| {
                 T::new(&[x,y,z]) - T::new(&[i,j,k]) == T::new(&[x - i, y - j, z - k])
             },
 
-            "elem-wise multiplication", fn((f32, f32, f32), (f32, f32, f32)) -> bool =
+            "elem-wise multiplication", fn((f32, f32, f32), (f32, f32, f32)) -> bool,
             |(x,y,z), (i,j,k)| {
                 T::new(&[x,y,z]) * T::new(&[i,j,k]) == T::new(&[x * i, y * j, z * k])
             },
 
-            "elem-wise division", fn((f32, f32, f32), (f32, f32, f32)) -> bool =
+            "elem-wise division", fn((f32, f32, f32), (f32, f32, f32)) -> bool,
             |(x,y,z), (i,j,k)| {
                 T::new(&[x,y,z]) / T::new(&[i,j,k]) == T::new(&[x / i, y / j, z / k])
             },
 
-            "element-access", fn(Vec<f32>, usize) -> bool =
+            "element-access", fn(Vec<f32>, usize) -> bool,
             |v, idx| T::new(&v).get(idx) == v.get(idx).copied(),
 
-            "positive norm", fn (Vec<f32>) -> bool = |v| T::new(&v).magnitude() >= 0.0,
-            */
+            "positive norm", fn (Vec<f32>) -> bool, |v| T::new(&v).magnitude() >= 0.0,
          );
     }
 );
